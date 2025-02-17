@@ -7,6 +7,7 @@ import userRouter from './routes/userRoutes.js'
 import productRouter from './routes/productRoutes.js'
 import cartRouter from './routes/cartRoutes.js'
 import orderRouter from './routes/orderRoutes.js'
+import functionRouter from './routes/functionRoutes.js'
 
 // App config 
 const app = express()
@@ -16,15 +17,15 @@ connectCloudinary();
 
 //allowing request from frontend origins 
 const corsOptions = {
-    origin: [
-      'https://ben-ecommerce-mern-admin.vercel.app',
-      'https://ben-ecommerce-mern-frontend.vercel.app'
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true, 
-    optionsSuccessStatus: 200 
-  };
+  origin: [
+    'https://ben-ecommerce-mern-admin.vercel.app',
+    'https://ben-ecommerce-mern-frontend.vercel.app'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
 
 // middlewares 
 app.use(express.json())
@@ -32,7 +33,7 @@ app.use(cors())
 app.use(cors(corsOptions));
 
 // Handle preflight requests
-app.options('*', cors(corsOptions)); 
+app.options('*', cors(corsOptions));
 
 
 // api endpoints 
@@ -40,9 +41,10 @@ app.use('/api/user', userRouter)
 app.use('/api/product', productRouter)
 app.use('/api/cart', cartRouter)
 app.use('/api/order', orderRouter)
+app.use('/api/function', functionRouter)
 
 app.get('/', (req, res) => (
-    res.send("Api working")
+  res.send("Api working")
 ))
 
 app.listen(port, () => console.log('Server started on PORT: ' + port))

@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose"
+import mongoose from "mongoose"
 
 
 const userSchema = new mongoose.Schema({
@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     email: { type: String, requierd: true, unique: true },
     role: { type: String },
     password: { type: String, requierd: true },
-    cartData: { type: Object, default: {} }
+    cartData: { type: Object, default: {} },
 }, { minimize: false })
 
 

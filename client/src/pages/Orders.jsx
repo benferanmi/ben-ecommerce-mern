@@ -3,6 +3,7 @@ import { ShopContext } from "../context/ShopContext"
 import Title from "../components/Title";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Orders = () => {
 
@@ -10,9 +11,6 @@ const Orders = () => {
     const { backendUrl, token, currency, } = useContext(ShopContext);
 
     const [orderData, setOrderData] = useState([])
-
-
-
 
     const loadOrderData = async () => {
 
@@ -43,10 +41,18 @@ const Orders = () => {
 
     }
 
+    console.log(orderData)
+
     useEffect(() => {
         loadOrderData()
     }, [token])
 
+    if (orderData?.length === 0) {
+        return <div className="text-sm bg-slate-200 text-black flex flex-col justify-centerh-[100vh] px-16 w-[80%] ">
+            <p className="m-2 p-5">You Dont have An order Placed Yet. Kindly Proceed to the collection page and select some product. </p>
+            <Link className="outline-none border-none text-white bg-black px-12 py-6 border-r-5 text-center block max-w-[200px] mt-8" to={'/collection'}>Go to Collection</Link>
+        </div>
+    }
 
 
     return (
@@ -57,7 +63,7 @@ const Orders = () => {
 
             <div className="" >
                 {
-                    orderData.slice(1, 5).map((item, index) => (
+                    orderData.slice(0, 5).map((item, index) => (
                         <div key={index} className="py-4 border-t border-b text-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4" >
                             <div className="flex items-start gap-6 text-sm">
                                 <img src={item.image[0]} alt="" className="w-16 sm:w-20" />
