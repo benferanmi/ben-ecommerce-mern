@@ -19,10 +19,12 @@ connectCloudinary();
 const corsOptions = {
   origin: [
     'https://ben-ecommerce-mern-admin.vercel.app',
-    'https://ben-ecommerce-mern-frontend.vercel.app'
+    'https://ben-ecommerce-mern-frontend.vercel.app',
+    'http://localhost:5174',
+    'http://localhost:5174'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'token'],
   credentials: true,
   optionsSuccessStatus: 200
 };

@@ -165,5 +165,18 @@ const adminRegister = async (req, res) => {
     }
 }
 
+const fetchUserDetails = async (req, res) => {
+    const { userId } = req.body
 
-export { loginUser, registerUser, adminLogin, adminRegister }
+    try {
+
+        const userData = await userModel.findById(userId)
+
+        res.json({ success: true, userData })
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Internal Server Error" })
+
+    }
+}
+export { loginUser, registerUser, adminLogin, adminRegister, fetchUserDetails }
