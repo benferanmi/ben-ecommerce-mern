@@ -15,6 +15,31 @@ const port = process.env.PORT || 4000
 connectDB();
 connectCloudinary();
 
+//allowing request from frontend origins 
+const corsOptions = {
+  origin: [
+    'https://ben-ecommerce-mern-admin.vercel.app',
+    'https://ben-ecommerce-mern-frontend.vercel.app'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+//cors middleware
+app.use(cors(corsOptions));
+
+// Manually Handle Preflight Requests this is for when i am using vercel
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 // middlewares 
 app.use(express.json())
