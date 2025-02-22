@@ -14,9 +14,10 @@ import SearchBar from "./components/SearchBar"
 // eslint-disable-next-line no-unused-vars
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Verify from "./pages/Verify"
+import VerifyStripe from "./pages/VerifyStripe"
 import PrivacyPolicy from "./pages/Privacy"
 import Profile from "./pages/Profile"
+import VerifyPaystack from "./pages/VerifyPaystack"
 
 
 const App = () => {
@@ -37,7 +38,8 @@ const App = () => {
           <Route path="/place-order" element={<PlaceORder />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/verify" element={<Verify />} />
+          <Route path="/verifyStripe" element={<VerifyStripe />} />
+          <Route path="/verifyPaystack" element={<VerifyPaystack />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
         <Footer />

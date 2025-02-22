@@ -1,10 +1,11 @@
 import orderModel from "../models/orderModels.js";
 import userModel from "../models/userModels.js";
 import Stripe from "stripe"
+import https from "https"
 
 
 //global varaibles 
-const currency = 'usd'
+const currency = 'ngn'
 const deliveryCharge = 10
 
 //gateway initialise
@@ -86,8 +87,8 @@ const placeOrderStripe = async (req, res) => {
         })
 
         const session = await stripe.checkout.sessions.create({
-            success_url: `${origin}/verify?success=true&orderId=${newOrder._id}`,
-            cancel_url: `${origin}/verify?success=false&orderId=${newOrder._id}`,
+            success_url: `${origin}/verifyStripe?success=true&orderId=${newOrder._id}`,
+            cancel_url: `${origin}/verifyStripe?success=false&orderId=${newOrder._id}`,
             line_items,
             mode: 'payment',
         })
@@ -100,7 +101,6 @@ const placeOrderStripe = async (req, res) => {
     }
 }
 
-
 //verify Stripe 
 
 const verifyStripe = async (req, res) => {
@@ -109,7 +109,7 @@ const verifyStripe = async (req, res) => {
     try {
 
         if (success === "true") {
-            await orderModel.findByIdAndUpdate(orderId, { paument: true })
+            await orderModel.findByIdAndUpdate(orderId, { payment: true })
             await userModel.findByIdAndUpdate(userId, { cartData: {} })
             res.json({ success: true })
         } else {
@@ -121,6 +121,126 @@ const verifyStripe = async (req, res) => {
         console.log(error);
         res.json({ success: false, message: error.message })
     }
+}
+
+//placing order using paystach 
+const placeOrderPaystack = async (req, res) => {
+
+    const { userId, items, amount, address } = req.body;
+    const { origin } = req.headers;
+
+    const orderData = {
+        userId,
+        items,
+        address,
+        amount,
+        paymentMethod: "Paystack",
+        payment: false,
+        date: Date.now()
+    }
+    const convertedAmount = amount * 100
+    const newOrder = new orderModel(orderData);
+    await newOrder.save()
+
+
+    const params = JSON.stringify({
+        "email": address.email,
+        "first_name": address.firstName,
+        "last_name": address.lastName,
+        "amount": convertedAmount,
+        "currency": "NGN",
+        "callback_url": `${origin}/verifypaystack?orderId=${newOrder._id}`
+    })
+
+    const options = {
+        hostname: 'api.paystack.co',
+        port: 443,
+        path: '/transaction/initialize',
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${process.env.PAYSTACK_TEST_SECRET_KEY} `,
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const paystackRequest = https.request(options, paystackResponse => {
+        let data = ''
+
+        paystackResponse.on('data', (chunk) => {
+            data += chunk
+        });
+
+        paystackResponse.on('end', () => {
+            const payData = JSON.parse(data)
+
+            res.json({ success: true, payData })
+
+        })
+    }).on('error', error => {
+        console.error(error)
+        res.json({ success: false, message: error.message })
+    })
+
+    paystackRequest.write(params)
+    paystackRequest.end()
+}
+
+//verify the payment from 
+const verifyPaystackPayment = async (req, res) => {
+
+    const { orderId, reference, userId } = req.body
+
+    const options = {
+        hostname: 'api.paystack.co',
+        timeout: 10000,
+        port: 443,
+        path: `/transaction/verify/${reference}`,
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${process.env.PAYSTACK_TEST_SECRET_KEY}`
+        }
+    }
+
+    // Create the request
+    const request = https.request(options, (paystackResponse) => {
+        let data = '';
+
+        paystackResponse.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        paystackResponse.on('end', async () => {
+            if (paystackResponse.statusCode === 200) {
+                const parseData = JSON.parse(data)
+
+                try {
+                    await orderModel.findByIdAndUpdate(orderId, { payment: true })
+                    await userModel.findByIdAndUpdate(userId, { cartData: {} })
+                    res.json({ success: true })
+                } catch (error) {
+                    console.error('Database update error:', error);
+                    res.status(500).json({ success: false, message: 'Internal server error' });
+                }
+            } else {
+                try {
+                    await orderModel.findByIdAndDelete(orderId)
+                    console.error('Failed to verify payment:', data);
+
+                    res.status(paystackResponse.statusCode).json({ success: false, message: 'Payment verification failed', data });
+                } catch (error) {
+
+                }
+            }
+        });
+    });
+
+    request.on('error', (error) => {
+        console.error('Error occurred during payment verification:', error);
+        res.status(500).json({ message: 'Error occurred during payment verification', error: error.message });
+    });
+
+    request.end();
+
 }
 
 // placing order using razorpay method
@@ -173,4 +293,4 @@ const updateStatus = async (req, res) => {
     }
 }
 
-export { placeOrder, placeOrderRazorPay, placeOrderStripe, allOrders, userOrder, updateStatus, verifyStripe }
+export { placeOrder, placeOrderRazorPay, placeOrderStripe, allOrders, userOrder, updateStatus, verifyStripe, placeOrderPaystack, verifyPaystackPayment }

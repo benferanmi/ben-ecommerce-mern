@@ -69,6 +69,7 @@ const PlaceORder = () => {
 
           }
         }
+
           break;
 
         case 'stripe': {
@@ -81,11 +82,26 @@ const PlaceORder = () => {
           }
         }
 
-
           break;
 
         case 'razorpay': {
           toast.error("Payment Method Not Available at the Moment, Kindly Select Another Payment Method.")
+        }
+
+          break;
+
+        case 'paystack': {
+          const responsePaystack = await axios.post(backendUrl + '/api/order/paystack', orderData, { headers: { token } })
+
+          if (responsePaystack.data.success) {
+            const paystackData = responsePaystack.data.payData.data
+
+            const session_url = paystackData.authorization_url
+            window.location.replace(session_url)
+
+          }
+
+          console.log(responsePaystack)
         }
 
           break;
@@ -145,7 +161,7 @@ const PlaceORder = () => {
         <div className="mt-12">
           <Title text1={'PAYMENT'} text2={'INFORMATION'} />
           {/* ---------------------Payment Method Selection-------------------------- */}
-          <div className="flex gap-3 flex-col lg:flex-row">
+          <div className="gap-3 grid grid-cols-1 lg:grid-cols-[1fr_1fr] ">
             <div onClick={() => setMethod('stripe')} className="flex items-center gap-3 border w-full p-2 px-3 cursor-pointer">
               <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'stripe' ? 'bg-green-400' : ''}`}></p>
               <img className="h-5" src={assets.stripe_logo} />
@@ -157,6 +173,10 @@ const PlaceORder = () => {
             <div onClick={() => setMethod('cod')} className="flex items-center gap-3 border p-2 px-3 cursor-pointer">
               <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'cod' ? 'bg-green-400' : ''}`}></p>
               <p className="text-gray-500 text-sm font-medium mx-4">CASH ON DELIVERY</p>
+            </div>
+            <div onClick={() => setMethod('paystack')} className="flex items-center gap-3 border p-2 px-3 cursor-pointer">
+              <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'paystack' ? 'bg-green-400' : ''}`}></p>
+              <p className="text-gray-500 text-sm font-medium mx-4">PAYSTACK</p>
             </div>
           </div>
 
