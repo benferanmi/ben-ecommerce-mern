@@ -6,7 +6,7 @@ import ProductItem from "../components/ProductItem";
 
 const Collection = () => {
 
-  const { products, search, showSearch } = useContext(ShopContext)
+  const { products, search, showSearch, isOn } = useContext(ShopContext)
   const [showFliters, setShowfliters] = useState(false);
   const [fliterProducts, setFliterProducts] = useState([]);
   const [category, setCategory] = useState([]);
@@ -83,7 +83,7 @@ const Collection = () => {
   }, [sortType])
 
   return (
-    <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
+    <div className={`${isOn ? "text-white" : ""} flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t`} >
 
       {/* fliter options */}
 
@@ -93,7 +93,7 @@ const Collection = () => {
         </p>
         <div className={`border border-gray-300 pl-5 py-3 mt-6 ${showFliters ? '' : 'hidden'} sm:block`}>
           <p className="mb-3 text-sm font-medium">CATEGORIES</p>
-          <div className="flex flex-col gap-2 text-sm font-light text-gray-700">
+          <div className={`${isOn ? "text-white" : "text-gray-700"} flex flex-col gap-2 text-sm font-light`}>
             <p className="flex gap-2">
               <input className="w-3" type="checkbox" onClick={toggleCategory} value={'Men'} /> Men
             </p>
@@ -112,7 +112,7 @@ const Collection = () => {
 
         <div className={`border border-gray-300 pl-5 py-3 my-5 ${showFliters ? '' : 'hidden'} sm:block`}>
           <p className="mb-3 text-sm font-medium">TYPE</p>
-          <div className="flex flex-col gap-2 text-sm font-light text-gray-700">
+          <div className={`${isOn ? "text-white" : "text-gray-700"} flex flex-col gap-2 text-sm font-light`}>
             <p className="flex gap-2">
               <input className="w-3" type="checkbox" onClick={toggleSubCategory} value={'Topwear'} /> Topwear
             </p>
@@ -132,7 +132,7 @@ const Collection = () => {
 
       <div className="flex-1">
         <div className="flex justify-between text-base sm:text-2xl mb-4">
-          <Title text1={'All'} text2={'COLLECTIONS'} />
+          <Title isOn={isOn} text1={'All'} text2={'COLLECTIONS'} />
 
           {/* Products Sort */}
           <select onChange={(e) => setSortType(e.target.value)} className="border-2 border-gray-200 text-sm px-2">
@@ -148,7 +148,7 @@ const Collection = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6" >
           {
             fliterProducts.map((item, index) => (
-              <ProductItem key={index} name={item.name} price={item.price} id={item._id} image={item.image} />
+              <ProductItem isOn={isOn} key={index} name={item.name} price={item.price} id={item._id} image={item.image} />
             ))
           }
         </div>

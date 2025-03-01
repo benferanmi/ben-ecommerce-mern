@@ -18,6 +18,7 @@ import stripe_logo from './stripe_logo.png'
 import cross_icon from './cross_icon.png'
 import shopping_cart_icon from './shopping_cart_icon.png'
 import user_profile_icon from './user_profile_icon.png'
+import logowhite from "./logowhite.png"
 
 export const assets = {
     logo,
@@ -39,5 +40,6 @@ export const assets = {
     stripe_logo,
     cross_icon,
     shopping_cart_icon,
-    user_profile_icon
+    user_profile_icon,
+    logowhite
 }

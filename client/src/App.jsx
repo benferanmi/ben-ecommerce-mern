@@ -18,11 +18,15 @@ import VerifyStripe from "./pages/VerifyStripe"
 import PrivacyPolicy from "./pages/Privacy"
 import Profile from "./pages/Profile"
 import VerifyPaystack from "./pages/VerifyPaystack"
+import { useContext } from "react"
+import { ShopContext } from "./context/ShopContext"
+
 
 
 const App = () => {
+  const { isOn, darkModeBgText } = useContext(ShopContext)
   return (
-    <div>
+    <div className={isOn ? darkModeBgText : ""}>
       <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] ">
         <ToastContainer />
         <NavBar />
@@ -30,8 +34,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/collection" element={<Collection />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About isOn={isOn} />} />
+          <Route path="/contact" element={<Contact isOn={isOn} />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/product/:productId" element={<Product />} />
           <Route path="/login" element={<Login />} />
@@ -42,7 +46,7 @@ const App = () => {
           <Route path="/verifyPaystack" element={<VerifyPaystack />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
-        <Footer />
+        <Footer isOn={isOn} />
       </div>
     </div>
   )

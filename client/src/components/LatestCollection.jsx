@@ -5,7 +5,7 @@ import ProductItem from './ProductItem';
 
 const LatestCollection = () => {
 
-    const { products } = useContext(ShopContext);
+    const { products, isOn } = useContext(ShopContext);
 
     const [latestProducts, setLatestProducts] = useState([]);
 
@@ -18,8 +18,8 @@ const LatestCollection = () => {
     return (
         <div className='my-10'>
             <div className='text-center py-8 text-3xl' >
-                <Title text1={'LATEST'} text2={'COLLECTION'} />
-                <p className='w-3/4 m-auto text-xs sm:text-sm md:text-base text-gray-600'>
+                <Title isOn={isOn} text1={'LATEST'} text2={'COLLECTION'} />
+                <p className={`w-3/4 m-auto text-xs sm:text-sm md:text-base ${isOn ? "text-slate-200" : "text-gray-600"}`}>
                     Lorem Ipsum is simply dummy text of the printing and the typesetting industry.
                 </p>
             </div>
@@ -28,7 +28,7 @@ const LatestCollection = () => {
             <div className='grid grid-cols-2 sm:grids-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6'>
                 {
                     latestProducts.map((item, index) => (
-                        <ProductItem key={index} id={item._id} name={item.name} price={item.price} image={item.image} />
+                        <ProductItem isOn={isOn} key={index} id={item._id} name={item.name} price={item.price} image={item.image} />
 
                     ))
                 }

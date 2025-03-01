@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { useContext } from "react"
 import { ShopContext } from "../context/ShopContext"
 
-const Search = ({ searchQuery }) => {
+const Search = () => {
     const { backendUrl } = useContext(ShopContext)
 
     

@@ -18,6 +18,10 @@ const ShopContextProvider = (props) => {
     const [products, setProducts] = useState([])
     const navigate = useNavigate()
     const [token, setToken] = useState('')
+    const [isOn, setIsOn] = useState(false)
+    const [darkModeBgText, setDarkModeBgText] = useState("")
+    const [darkModeText, setDarkModeText] = useState("")
+
 
 
     const addToCart = async (itemId, size) => {
@@ -150,13 +154,28 @@ const ShopContextProvider = (props) => {
         if (!token && localStorage.getItem('token')) {
             setToken(localStorage.getItem('token'))
             getUserCart(localStorage.getItem('token'))
+
+            //setting timeout to remove the token from the localstorage after the token expire
+            setTimeout(() => {
+                localStorage.removeItem('token');
+                console.log('Token has expired and has been removed from local storage.');
+            }, 5 * 60 * 60 * 1000);
         }
     }, [])
 
+    useEffect(() => {
+        if (isOn) {
+            setDarkModeBgText("bg-black text-white")
+            setDarkModeText("text-white")
+        } else {
+            return;
+        }
+
+    }, [isOn])
     const value = {
         products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch,
         cartItems, addToCart, getCartCount, updateQuantity,
-        getCartAmount, navigate, backendUrl, setToken, token, setCartItems,
+        getCartAmount, navigate, backendUrl, setToken, token, setCartItems, isOn, setIsOn, darkModeBgText, darkModeText
 
     }
 

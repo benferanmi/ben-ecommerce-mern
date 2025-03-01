@@ -101,7 +101,6 @@ const PlaceORder = () => {
 
           }
 
-          console.log(responsePaystack)
         }
 
           break;
